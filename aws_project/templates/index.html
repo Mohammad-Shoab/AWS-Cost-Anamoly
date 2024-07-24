@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Combined Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+    <div class="ticker-container">
+        <div class="ticker-wrap">
+            {% for service, (cost, direction, change) in top_services.items() %}
+                <div class="ticker-item">{{ service }} {{ cost }}
+                    {% if direction == 'up' %}
+                        <span class="up">▲ {{ change }}%</span>
+                    {% elif direction == 'down' %}
+                        <span class="down">▼ {{ change }}%</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="sidebar">
+        <h1>Welcome, Beni</h1>
+        <ul>
+            <li><a href="{{ url_for('usage.index') }}" class="button">Usage Application</a></li>
+            <li><a href="{{ url_for('alert.index') }}" class="button">Alert Application</a></li>
+            <li><a class="button">Cron Job : 
+                <label class="switch">
+                    <input class="switch-input" type="checkbox" id="cron-toggle" onchange="toggleCron()" {% if cron_enabled %}checked{% endif %} />
+                    <span class="switch-label" data-on="On" data-off="Off"></span>
+                    <span class="switch-handle"></span>
+                </label>
+            </a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="top-section">
+            <div>
+                <h2>Totals Services</h2>
+                <p>{{ num_services }}</p>
+            </div>
+            <div>
+                <h2>Curr. Month's Cost</h2>
+                <p>{{ total_current_month_cost }} (till {{ current_date }})</p>
+            </div>
+            <div>
+                <h2>Last Month's Cost</h2>
+                <p>{{ total_last_month_cost }}</p>
+            </div>
+            <div>
+                <h2>AWS Account ID</h2>
+                <p>{{ aws_account_id }}</p>
+            </div>
+            <div>
+                <h2>Regions Used</h2>
+                <p>{{ regions_used }}</p>
+            </div>
+        </div>
+
+        <h2>Daily Data: Cost Trend of Top 5 Services Over Last 7 Days</h2>
+        <div id="controlsContainer">
+            <div id="graphTypeToggleContainer">
+                <label class="graph-switch">
+                    <input type="checkbox" id="graphTypeToggle" onchange="updateGraphType()">
+                    <span class="graph-switch-label" data-on="Line" data-off="Bar"></span>
+                    <span class="graph-switch-handle"></span>
+                </label>
+            </div>
+            <!-- Add the dropdown menu for selecting services -->
+            <div id="serviceSelectContainer">
+                <label for="serviceSelect">Select Service:</label>
+                <select id="serviceSelect" onchange="updateService()">
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+        </div>
+
+        <div class="graph-grid">
+            <div class="graph">
+                <canvas id="dailyGraph1"></canvas>
+            </div>
+            <div class="graph">
+                <canvas id="dailyGraph2"></canvas>
+            </div>
+        </div>
+
+        <h2>Weekly Data: Cost Trend of Top 5 Services Over Last 4 Weeks</h2>
+        <div id="weeklyControlsContainer">
+            <div id="weeklyGraphTypeToggleContainer">
+                <label class="graph-switch">
+                    <input type="checkbox" id="weeklyGraphTypeToggle" onchange="updateWeeklyGraphType()">
+                    <span class="graph-switch-label" data-on="Line" data-off="Bar"></span>
+                    <span class="graph-switch-handle"></span>
+                </label>
+            </div>
+            <!-- Add the dropdown menu for selecting services -->
+            <div id="weeklyServiceSelectContainer">
+                <label for="weeklyServiceSelect">Select Service:</label>
+                <select id="weeklyServiceSelect" onchange="updateWeeklyService()">
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+        </div>
+
+        <div class="graph-grid">
+            <div class="graph">
+                <canvas id="weeklyGraph1"></canvas>
+            </div>
+            <div class="graph">
+                <canvas id="weeklyGraph2"></canvas>
+            </div>
+        </div>
+
+        <!-- Monthly Data Section -->
+        <h2>Monthly Data: Cost Trend of Top 5 Services Over Last 4 Months</h2>
+        <div id="monthlyControlsContainer">
+            <div id="monthlyGraphTypeToggleContainer">
+                <label class="graph-switch">
+                    <input type="checkbox" id="monthlyGraphTypeToggle" onchange="updateMonthlyGraphType()">
+                    <span class="graph-switch-label" data-on="Line" data-off="Bar"></span>
+                    <span class="graph-switch-handle"></span>
+                </label>
+            </div>
+            <!-- Add the dropdown menu for selecting services -->
+            <div id="monthlyServiceSelectContainer">
+                <label for="monthlyServiceSelect">Select Service:</label>
+                <select id="monthlyServiceSelect" onchange="updateMonthlyService()">
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+        </div>
+
+        <div class="graph-grid">
+            <div class="graph">
+                <canvas id="monthlyGraph1"></canvas>
+            </div>
+            <div class="graph">
+                <canvas id="monthlyGraph2"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>

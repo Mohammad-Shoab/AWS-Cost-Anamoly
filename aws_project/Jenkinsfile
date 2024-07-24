@@ -1,0 +1,44 @@
+podTemplate(yaml: """
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: 813361731051.dkr.ecr.ap-south-1.amazonaws.com/dockerhub:kaniko-project-executor-debug-v1.9.1
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
+    volumeMounts:
+      - name: config-vol
+        mountPath: /kaniko/.docker
+    resources:
+    requests:
+        cpu: 500m
+        memory: 1Gi
+    limits:
+        cpu: "1000m"
+        memory: 2Gi
+  volumes:
+  - name: config-vol
+    configMap:
+      name: docker-config
+
+"""
+  ) {
+
+  node(POD_LABEL) {
+    stage('Checkout') {
+      container('kaniko') {
+        checkout scm
+      }
+    }
+    stage('Build with Kaniko') {
+      container('kaniko') {
+        sh 'pwd && ls -lrt ${WORKSPACE}'
+        sh """
+        /kaniko/executor -f ${WORKSPACE}/aws-billing-service/aws_project/Dockerfile  -c ${WORKSPACE}/aws-billing-service/aws_project  --cache=true --destination=813361731051.dkr.ecr.ap-south-1.amazonaws.com/starlord:${params.imageVersion}
+        """
+      }
+    }
+  }
+}

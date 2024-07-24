@@ -1,0 +1,123 @@
+/* Styles for the body */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0; /* Set background color */
+    margin: 0;
+    padding: 20px;
+    color: #333; /* Set text color */
+}
+
+/* Styles for the heading */
+h1 {
+    color: #4a90e2; /* Set heading color */
+    text-align: center; /* Center align text */
+    margin-bottom: 20px;
+}
+
+/* Styles for the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px;
+    text-align: center; /* Center align text */
+    border: 1px solid #ccc;
+}
+
+th {
+    background-color: #4a90e2; /* Set background color */
+    font-weight: bold; /* Set font weight */
+    color: #fff; /* Set text color */
+    text-transform: uppercase;
+}
+
+.column-width {
+    width: auto; /* Adjust as needed */
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Set even row background color */
+}
+
+tr:nth-child(odd) {
+    background-color: #e9e9e9; /* Set odd row background color */
+}
+
+tr:hover {
+    background-color: #e0e0e0; /* Set background color on hover */
+}
+
+/* CSS for the back button */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+/* CSS for the button container */
+.daily-button {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+}
+
+/* CSS for the button container */
+.weekly-button {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+}
+
+/* CSS for the button container */
+.monthly-button {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+}
+
+/* CSS for the fixed size button */
+.fixed-size-button {
+    width: 95px; /* Set the width */
+    height: 20px; /* Set the height */
+    line-height: 40px; /* Align text vertically */
+    text-align: center; /* Center align text */
+}
+
+.button {
+    display: inline-block;
+    padding: 5px 20px; /* Add padding */
+    border-radius: 4px; /* Add border radius */
+    border: 1px solid #ccc; /* Set border */
+    background-color: #4a90e2; /* Set background color */
+    color: white; /* Set text color */
+    cursor: pointer; /* Change cursor on hover */
+    font-size: 1em; /* Set font size */
+    transition: background-color 0.3s ease; /* Add transition for hover effect */
+    text-decoration: none; /* Remove underline from link */
+    margin-right: 10px; /* Add margin between buttons */
+    line-height: 20px; /* Align text vertically */
+    text-align: center; /* Center align text */
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #357ebd; /* Change background color on hover */
+}
+
+/* Styles for sorting buttons */
+th button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0;
+    margin-left: 5px;
+}

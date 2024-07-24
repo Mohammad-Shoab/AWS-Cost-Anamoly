@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ service_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/weekly_monthly.css') }}">
+    <script src="{{ url_for('static', filename='js/weekly_monthly.js') }}"></script>
+</head>
+<body>
+    <h1>{{ service_name }}</h1>
+
+    <!-- Display a link to switch between weekly and monthly views -->
+    {% if request.args.get('data_type') == 'monthly' %}
+    <div class="back-button">
+        <a href="/usage/weekly_monthly_index?data_type=monthly" class="button">Back to Service Usage</a>
+    </div>
+    {% elif request.args.get('data_type') == 'weekly' %}
+    <div class="back-button">
+        <a href="/usage/weekly_monthly_index?data_type=weekly" class="button">Back to Service Usage</a>
+    </div>
+    {% else %}
+    <div class="back-button">
+        <a href="/usage/weekly_monthly_index" class="button">Back to Service Usage</a>
+    </div>
+    {% endif %}
+
+    <!-- Buttons to switch between weekly and monthly views -->
+    <div class="daily-button">
+        <a href="/usage/usage-types/{{ service_name }}" class="button fixed-size-button">Daily View</a>
+    </div>
+
+    {% if request.args.get('data_type') == 'monthly' %}
+    <div class="weekly-button">
+        <a href="/usage/weekly_monthly/{{ service_name }}?data_type=weekly" class="button fixed-size-button">Weekly View</a>
+    </div>
+    {% else %}
+    <div class="monthly-button">
+        <a href="/usage/weekly_monthly/{{ service_name }}?data_type=monthly" class="button fixed-size-button">Monthly View</a>
+    </div>
+    {% endif %}
+
+    <!-- Table to display weekly or monthly usage data -->
+    <table>
+        <thead>
+            <tr>
+                <th>Usage Type</th>
+                <!-- Generate columns for the latest 8 weeks or months -->
+                {% for label in labels %}
+                    <th>
+                        {{ label }}
+                        <br>
+                        <button onclick="sortTable({{ loop.index0 }}, 'asc')">⬆️</button>
+                        <button onclick="sortTable({{ loop.index0 }}, 'desc')">⬇️</button>
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody id="usage-table-body">
+            <!-- Loop through each date -->
+            {% for date, usage_data in usage_data.items() %}
+                <tr>
+                    <td>{{ date }}</td>
+                    <!-- Display total data for each usage type -->
+                    {% for usage_type, value in usage_data.items() %}
+                        <td class="column-width"> {{ '%.2f' % value if value is not none else '0' }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

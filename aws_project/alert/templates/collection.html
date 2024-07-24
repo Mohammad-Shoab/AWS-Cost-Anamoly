@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ collection_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/collection.css') }}">
+</head>
+<body>
+    <!-- Top buttons for navigation -->
+    <div class="top-buttons">
+        <a href="/alert/">Service Alert Dashboard</a>
+    </div>
+    <!-- Heading for the collection -->
+    <h1>{{ collection_name }}</h1>
+    <!-- Table to display collection data -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th class="service">Usage Type</th>
+                <th>Daily Alert</th>
+                <th>Daily Threshold Percentage</th>
+                <th>Daily Threshold Value</th>
+                <th>Weekly Alert</th>
+                <th>Weekly Threshold Percentage</th>
+                <th>Weekly Threshold Value</th>
+                <th>Monthly Alert</th>
+                <th>Monthly Threshold Percentage</th>
+                <th>Monthly Threshold Value</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through each document in the collection -->
+            {% for document in collection_data %}
+            <tr>
+                {% for key, value in document.items() %}
+                {% if key != '_id' %}
+                <!-- Display document data -->
+                <td>{{ value }}</td>
+                {% endif %}
+                {% endfor %}
+                <!-- Add edit link for each document -->
+                <td><a href="/alert/edit/{{ collection_name }}/{{ document._id }}" class="edit-link">Edit</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

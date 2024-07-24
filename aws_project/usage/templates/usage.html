@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Usage</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/usage.css') }}">
+</head>
+<body>
+    <h1>Service Usage</h1>
+    <!-- Form for date selection -->
+    <form action="/usage/" method="POST" id="dateForm" onsubmit="return validateForm()">
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" min="{{ min_date }}" max="{{ max_date }}" value="{{ end_date }}">
+        <input type="submit" value="Submit">
+    </form>
+
+    <!-- Back button to return to the service dashboard -->
+    <div class="back-button">
+        <a href="/" class="button">Home</a>
+    </div>
+
+    <!-- Buttons to switch between weekly and monthly views -->
+    <div class="weekly-button">
+        <a href="/usage/weekly_monthly_index?data_type=weekly" class="button fixed-size-button">Weekly View</a>
+    </div>
+    
+    <div class="monthly-button">
+        <a href="/usage/weekly_monthly_index?data_type=monthly" class="button fixed-size-button">Monthly View</a>
+    </div>
+
+    <!-- Note for the user -->
+    <b2><strong>Note:</strong> It will automatically calculate Start date to show continuous 7 days data.</b2>
+    
+    <!-- Popup container for empty end date -->
+    <div class="popup-container" id="validateFormPopup">
+        <p>Please select the end date.</p>
+        <button onclick="closePopup('validateFormPopup')">Okay</button>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/usage.js') }}"></script>      
+    
+    <!-- Table to display service usage data -->
+    <table>
+        <thead>
+            <tr>
+                <th>Services</th>
+                <!-- Generate columns for the selected date range -->
+                {% for i in range(7) %}
+                    <th class="date">
+                        {{ (start_date + timedelta(days=i)).strftime('%Y-%m-%d') }}
+                        <br>
+                        <button onclick="sortTable({{ loop.index0 }}, 'asc')">⬆️</button>
+                        <button onclick="sortTable({{ loop.index0 }}, 'desc')">⬇️</button>
+                    </th>
+                {% endfor %}
+                <th>Usage Types</th>
+            </tr>
+        </thead>
+        <tbody id="service-table-body">
+            <!-- Loop through service data -->
+            {% for service, total_data in service_data.items() %}
+            <tr>
+                <td class="first-column">{{ service }}</td>
+                <!-- Display total data for each day -->
+                {% for data in total_data %}
+                    <td>{{ data | round(2) }}</td>
+                {% endfor %}
+                <!-- Add view button -->
+                <td><a href="{{ url_for('usage.usage', service=service) }}" class="view-button">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

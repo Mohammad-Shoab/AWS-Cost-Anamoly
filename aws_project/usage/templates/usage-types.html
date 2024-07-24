@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ service_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/usage-types.css') }}">
+</head>
+<body>
+    <h1>{{ service_name }}</h1>
+
+    <!-- Form for date selection -->
+    <form action="/usage/usage-types/{{ service_name }}" method="POST" id="dateForm" onsubmit="return validateForm()">
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" min="{{ min_date }}" max="{{ max_date }}" value="{{ end_date }}">
+        <input type="submit" value="Submit">
+    </form>
+
+    <!-- Back button to return to the service usage dashboard -->
+    <div class="back-button">
+        <a href="/usage/" class="button">Back to Service Usage</a>
+    </div>
+
+    <!-- Weekly and Monthly view buttons -->
+    <div class="weekly-view-button">
+        <a href="/usage/weekly_monthly/{{ service_name }}?data_type=weekly" class="button fixed-size-button">Weekly View</a>
+    </div>
+
+    <div class="monthly-view-button">
+        <a href="/usage/weekly_monthly/{{ service_name }}?data_type=monthly" class="button fixed-size-button">Monthly View</a>
+    </div>
+
+    <!-- Note for the user -->
+    <b2><strong>Note:</strong> It will automatically calculate Start date to show continuous 7 days data.</b2>
+
+    <!-- Popup container -->
+    <div class="popup-container" id="validateFormPopup">
+        <p>Please select the end date.</p>
+        <button onclick="closePopup('validateFormPopup')">Okay</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/usage-types.js') }}"></script> 
+
+    <!-- Table to display usage data -->
+    <table>
+        <thead>
+            <tr>
+                <th>Usage Type</th>
+                <!-- Generate columns for the selected date range -->
+                {% for i in range(7) %}
+                    <th class="date">
+                        {{ (start_date + timedelta(days=i)).strftime('%Y-%m-%d') }}
+                        <br>
+                        <button onclick="sortTable({{ loop.index0 }}, 'asc')">⬆️</button>
+                        <button onclick="sortTable({{ loop.index0 }}, 'desc')">⬇️</button>
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody id="usage-table-body">
+            <!-- Loop through usage types -->
+            {% for usage_type, data in usage_data.items() %}
+            <tr>
+                <td>{{ usage_type }}</td>
+                <!-- Display data for each day -->
+                {% for i in range(7) %}
+                <td class="column-width">{{ data[(start_date + timedelta(days=i)).strftime('%Y-%m-%d')] | round(2) if data.get((start_date + timedelta(days=i)).strftime('%Y-%m-%d')) is not none else '0' }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

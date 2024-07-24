@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character set and viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title of the page -->
+    <title>Error</title>
+    <!-- Internal CSS styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
+</head>
+<body>
+    <!-- Error container -->
+    <div class="container">
+        <!-- Error heading -->
+        <h1>Error</h1>
+        <!-- Error message -->
+        <p>{{ error_message }}</p>
+        <!-- Link to homepage -->
+        <p>Please <a href="/">go back to the homepage</a></p>
+    </div>
+</body>
+</html>

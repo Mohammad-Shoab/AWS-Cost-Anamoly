@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Usage</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/weekly_monthly_index.css') }}">
+    <script src="{{ url_for('static', filename='js/weekly_monthly_index.js') }}"></script>
+</head>
+<body>
+    <h1>Service Usage</h1>
+
+    <!-- Display a link to switch between weekly and monthly views -->
+    <div class="back-button">
+        <a href="/" class="button">Home</a>
+    </div>
+
+    <!-- Buttons to switch between weekly and monthly views -->
+    <div class="daily-button">
+        <a href="/usage/" class="button fixed-size-button">Daily View</a>
+    </div>
+    
+    {% if request.args.get('data_type') == 'monthly' %}
+    <div class="weekly-button">
+        <a href="/usage/weekly_monthly_index?data_type=weekly" class="button fixed-size-button">Weekly View</a>
+    </div>
+    {% else %}
+    <div class="monthly-button">
+        <a href="/usage/weekly_monthly_index?data_type=monthly" class="button fixed-size-button">Monthly View</a>
+    </div>
+    {% endif %}
+
+    <!-- Table to display weekly or monthly usage data -->
+    <table>
+        <thead>
+            <tr>
+                <th>Services</th>
+                <!-- Generate columns for the latest 8 weeks or months -->
+                {% for label in labels %}
+                    {% if request.args.get('data_type') == 'monthly' %}
+                        <th class="th1 no-wrap {{ 'fixed-width' if loop.index < 9 else '' }}">
+                    {% else %}
+                        <th class="{{ 'fixed-width' if loop.index < 9 else '' }}">
+                    {% endif %}
+                        {{ label }}
+                        <br>
+                        <button onclick="sortTable({{ loop.index0 }}, 'asc')">⬆️</button>
+                        <button onclick="sortTable({{ loop.index0 }}, 'desc')">⬇️</button>
+                    </th>
+                {% endfor %}
+                <th>Usage Types</th>
+            </tr>
+        </thead>
+        <tbody id="service-table-body">
+            <!-- Loop through each date -->
+            {% for date, usage_data in usage_data.items() %}
+                <tr>
+                    <td class="first-column">{{ date }}</td>
+                    <!-- Display total data for each usage type -->
+                    {% for usage_type, value in usage_data.items() %}
+                        <td>{{ '%.2f' % value if value is not none else '0' }}</td>
+                    {% endfor %}
+                    <!-- Add view button with conditional redirection -->
+                    <td>
+                        {% if request.args.get('data_type') == 'monthly' %}
+                            <a href="{{ url_for('usage.weekly_monthly', service=date, data_type='monthly') }}" class="view-button">View</a>
+                        {% else %}
+                            <a href="{{ url_for('usage.weekly_monthly', service=date, data_type='weekly') }}" class="view-button">View</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

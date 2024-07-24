@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Levels</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/service.css') }}">
+</head>
+<body>
+    <!-- Heading for the page -->
+    <h1>Service Alert Dashboard</h1>
+
+    <!-- Table to display service-level data -->
+    <table>
+        <thead>
+            <tr>
+                <th class="service"> Service</th>
+                <th>Daily Alert</th>
+                <th>Daily Threshold Percentage</th>
+                <th>Daily Threshold Value</th>
+                <th>Weekly Alert</th>
+                <th>Weekly Threshold Percentage</th>
+                <th>Weekly Threshold Value</th>
+                <th>Monthly Alert</th>
+                <th>Monthly Threshold Percentage</th>
+                <th>Monthly Threshold Value</th>
+                <th>Usage Types</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through each service -->
+            {% for collection in collections %}
+            <tr>
+                <td style="text-align: center;">{{ collection }}</td> <!-- Center align text in the first row -->
+                <!-- Fetch service level data for the current service -->
+                {% set service_data = mongo.db[collection].find_one() %}
+                <!-- Display service level data -->
+                <td>{{ service_data['Service-Alert-Threshold']['Daily-Alert'] }}</td>
+                <td>{{ service_data['Service-Alert-Threshold']['Daily-Threshold-Percentage']}}</td>
+                <td>{{ service_data['Service-Alert-Threshold']['Daily-Threshold-Value'] }}</td>
+                <td>{{ service_data['Service-Alert-Threshold']['Weekly-Alert'] }}</td>
+                <td>{{ service_data['Service-Alert-Threshold']['Weekly-Threshold-Percentage']}}</td>
+                <td>{{ service_data['Service-Alert-Threshold']['Weekly-Threshold-Value'] }}</td>
+                <td>{{ service_data['Service-Alert-Threshold']['Monthly-Alert'] }}</td>
+                <td>{{ service_data['Service-Alert-Threshold']['Monthly-Threshold-Percentage']}}</td>
+                <td>{{ service_data['Service-Alert-Threshold']['Monthly-Threshold-Value'] }}</td>
+                <!-- View button to redirect to collection page of the service -->
+                <td><a href="/alert/collection/{{ collection }}" class="view-button">View</a></td>
+                <!-- Edit button to redirect to edit page of the service -->
+                <td><a href="/alert/edit-service/{{ collection }}" class="edit-button">Edit</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Back button to return to the service dashboard -->
+    <div class="back-button">
+        <a href="/" class="button">Home</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Service Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit-service.css') }}">
+</head>
+<body>
+    <div class="header">
+        <!-- Back and Home buttons -->
+        <div class="top-buttons">
+            <a href="/alert/">Back</a>
+        </div>
+        <!-- Page heading -->
+        <h1>Edit Service Data</h1>
+    </div>
+
+    <!-- Form for editing service-level data -->
+    <form action="/alert/edit-service/{{ collection_name }}" method="post" id="edit-service-form">
+        <label>Service</label>
+        <input type="text" value="{{ collection_name }}" readonly><br>
+        {% for key, value in service_data['Service-Alert-Threshold'].items() %}
+            <!-- Render input fields based on key -->
+            {% if key in ['Daily-Alert', 'Weekly-Alert', 'Monthly-Alert'] %}
+                <!-- Render select input for boolean fields -->
+                <label for="{{ key }}">{{ key }}</label>
+                <select id="{{ key }}" name="{{ key }}">
+                    <option value="true" {% if value == 'true' %} selected {% endif %}>True</option>
+                    <option value="false" {% if value == 'false' %} selected {% endif %}>False</option>
+                </select><br>
+                {% else %}
+                <!-- Render text input for other fields -->
+                <label for="{{ key }}">{{ key }}</label>
+                <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}"><br>
+            {% endif %}
+        {% endfor %}
+        <!-- Button to save changes -->
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <!-- Popup container for decimal values -->
+    <div class="popup-container" id="popup-container">
+        <p>Decimal value detected in one or more fields. Do you want to round them to the nearest integer?</p>
+        <div class="popup-buttons">
+            <button onclick="roundDecimalFields(true)">Yes</button>
+            <button onclick="roundDecimalFields(false)">No</button>
+        </div>
+    </div>
+
+    <!-- Popup container for decimal values1 -->
+    <div class="popup-container" id="popup-container1">
+        <p>Decimal value detected in one or more fields. Do you want to round them to two decimal places?</p>
+        <div class="popup-buttons">
+            <button onclick="roundDecimalFields1(true)">Yes</button>
+            <button onclick="roundDecimalFields1(false)">No</button>
+        </div>
+    </div>
+
+    <!-- Popup container for positive integer alert -->
+    <div class="popup-container" id="integer-popup-container">
+        <p>Invalid input: Please enter a positive integer or NA.</p>
+        <button onclick="closePopup('integer-popup-container')">Okay</button>
+    </div>
+
+    <!-- Popup container for percent symbol alert -->
+    <div class="popup-container" id="percent-popup-container">
+        <p>Invalid input: Please enter the value without "%" symbol or Just enter NA.</p>
+        <button onclick="closePopup('percent-popup-container')">Okay</button>
+    </div>
+
+    <!-- Popup container for out-of-range alert -->
+    <div class="popup-container" id="range-popup-container">
+        <p>Invalid input: Please enter a number between 0 and 100 or NA in Percentage fields.</p>
+        <button onclick="closePopup('range-popup-container')">Okay</button>
+    </div>
+
+    <!-- Popup container for out-of-range1 alert -->
+    <div class="popup-container" id="range-popup-container1">
+        <p>Invalid input: Please enter a number between 0 and 10,00,000 or NA in Value fields.</p>
+        <button onclick="closePopup('range-popup-container1')">Okay</button>
+    </div>
+
+    <!-- JavaScript for validation and popups -->
+    <script src="{{ url_for('static', filename='js/edit-service.js') }}"></script>
+
+</body>
+</html>
